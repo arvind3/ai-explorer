@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="AI Explorer helps everyone discover the world's best free AI models available on OpenRouter."
+    />
+    <title>AI Explorer — Discover Free AI. Build Anything.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <header class="hero glass">
+      <div class="particles" id="particles" aria-hidden="true"></div>
+      <p class="eyebrow">AI Explorer • Free AI Models Discovery Platform</p>
+      <h1>The World's Best AI Models — 100% Free. No Credit Card. No Limits.</h1>
+      <p class="subheadline">
+        Explore powerful AI tools that developers use daily — now explained for everyone.
+      </p>
+
+      <div class="hero-tools">
+        <div class="live-counter" aria-live="polite">
+          <span class="counter-label">Live Free Models</span>
+          <span class="counter-number" id="freeModelCount">0</span>
+        </div>
+
+        <label class="filter-pill" for="useCaseFilter">
+          <span>Find by use case</span>
+          <select id="useCaseFilter">
+            <option value="All">All categories</option>
+            <option value="Writing">Writing</option>
+            <option value="Coding">Coding</option>
+            <option value="Learning">Learning</option>
+            <option value="Business">Business</option>
+            <option value="Creative">Creative</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <main>
+      <section class="guide glass" aria-labelledby="start-here-title">
+        <h2 id="start-here-title">Start Here in 3 Steps</h2>
+        <div class="steps">
+          <article class="step-card">
+            <span class="step-index">1</span>
+            <h3>Pick a free model</h3>
+            <p>Browse AI Explorer cards and choose the model that fits your task and skill level.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-index">2</span>
+            <h3>Get your OpenRouter key</h3>
+            <p>
+              Create a free account and copy your key from
+              <a href="https://openrouter.ai/settings/keys" target="_blank" rel="noreferrer">OpenRouter API Keys</a>.
+            </p>
+          </article>
+          <article class="step-card">
+            <span class="step-index">3</span>
+            <h3>Use it anywhere</h3>
+            <p>Paste your key into any app, agent, or coding tool and start building instantly.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="models-section" aria-labelledby="models-title">
+        <div class="section-heading">
+          <h2 id="models-title">Discover Free Models</h2>
+          <p>Updated on every page load using OpenRouter's live catalog.</p>
+        </div>
+
+        <div id="statusMessage" class="status-message">Loading free models…</div>
+        <div id="modelsGrid" class="models-grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="footer glass">
+      <p>
+        Curated and built with ❤️ by <strong>Arvind Bhardwaj</strong>
+      </p>
+      <p>
+        <a href="https://www.linkedin.com/in/arvindkumarbhardwaj/" target="_blank" rel="noreferrer">
+          LinkedIn Profile
+        </a>
+      </p>
+      <p class="tagline">Helping developers and learners unlock the power of AI — for free.</p>
+      <p>
+        <a href="https://github.com/arvindkumarbhardwaj/ai-explorer" target="_blank" rel="noreferrer">⭐ Star on GitHub</a>
+      </p>
+    </footer>
+
+    <script src="use-cases.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
