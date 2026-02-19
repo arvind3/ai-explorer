@@ -57,7 +57,7 @@
         }
       }
 
-      return { label: "Community", logo: "??" };
+      return { label: "Community", logo: "\uD83C\uDF10" };
     }
 
     function formatContextWindow(contextLength) {
@@ -65,15 +65,15 @@
       if (!tokens) return "Context window unavailable";
 
       const approxPages = Math.max(1, Math.round(tokens / 900));
-      return `${tokens.toLocaleString()} tokens � Can read about a ${approxPages}-page book at once`;
+      return `${tokens.toLocaleString()} tokens Â· Can read about a ${approxPages}-page book at once`;
     }
 
     function assignDifficulty(contextLength) {
       const tokens = Number(contextLength || 0);
 
-      if (tokens <= 32000) return { label: "?? Beginner Friendly", className: "difficulty-beginner" };
-      if (tokens <= 128000) return { label: "?? Intermediate", className: "difficulty-intermediate" };
-      return { label: "?? Power User", className: "difficulty-power" };
+      if (tokens <= 32000) return { label: "\uD83D\uDFE2 Beginner Friendly", className: "difficulty-beginner" };
+      if (tokens <= 128000) return { label: "\uD83D\uDFE1 Intermediate", className: "difficulty-intermediate" };
+      return { label: "\uD83D\uDD34 Power User", className: "difficulty-power" };
     }
 
     function titleCaseId(modelId) {

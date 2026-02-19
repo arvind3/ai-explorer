@@ -7,8 +7,8 @@ const ModelUtils = require("../model-utils.js");
 
 const ENRICHMENTS = {
   providers: {
-    openai: { label: "OpenAI", logo: "✨" },
-    meta: { label: "Meta", logo: "🔵" }
+    openai: { label: "OpenAI", logo: "OPENAI" },
+    meta: { label: "Meta", logo: "META" }
   },
   useCasesByCategory: {
     Writing: ["Write copy", "Draft email"],
