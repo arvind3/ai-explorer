@@ -15,7 +15,63 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Attempt API enablement (optional)
+        if: ${{ secrets.PAGES_ENABLEMENT_TOKEN != '' }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAGES_ENABLEMENT_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            try {
+              await github.request("GET /repos/{owner}/{repo}/pages", { owner, repo });
+              core.info(`Pages site already exists for ${owner}/${repo}.`);
+            } catch (error) {
+              if (error.status === 404) {
+                await github.request("POST /repos/{owner}/{repo}/pages", {
+                  owner,
+                  repo,
+                  build_type: "workflow"
+                });
+                core.info(`Enabled Pages site via API for ${owner}/${repo}.`);
+                return;
+              }
+              throw error;
+            }
+
+      - name: Validate Pages configuration
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            try {
+              const response = await github.request("GET /repos/{owner}/{repo}/pages", { owner, repo });
+              const buildType = response.data.build_type;
+              if (buildType !== "workflow") {
+                core.setFailed(
+                  "GitHub Pages is enabled, but build_type is not 'workflow'. " +
+                  "Go to Settings -> Pages and set Source to GitHub Actions."
+                );
+                return;
+              }
+              core.info(`Pages preflight passed for ${owner}/${repo}.`);
+            } catch (error) {
+              if (error.status === 404) {
+                core.setFailed(
+                  "GitHub Pages is not enabled for this repository. " +
+                  "Go to Settings -> Pages and set Source to GitHub Actions, then rerun this workflow."
+                );
+                return;
+              }
+              throw error;
+            }
+
   deploy:
+    needs: preflight
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

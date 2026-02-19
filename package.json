@@ -2,6 +2,11 @@
   "name": "ai-explorer",
   "private": true,
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "test:local": "node --test --test-isolation=none",
+    "test:live": "node scripts/check-live-site.js"
+  },
+  "devDependencies": {
+    "jsdom": "^26.0.0"
   }
 }
