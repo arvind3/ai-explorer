@@ -1,85 +1,58 @@
-# 🚀 AI Explorer — Discover Free AI. Build Anything.
+# AI Explorer
 
-AI Explorer is a beautiful, mobile-first discovery platform that helps non-technical and semi-technical users find and understand **100% free AI models** from OpenRouter.
+AI Explorer is a mobile-first discovery site for finding **free AI models** from OpenRouter.
 
-## ✨ Why AI Explorer
+## What it does
 
-Most model directories are built for experts. AI Explorer translates model specs into practical language so anyone can get value quickly.
+- Fetches live model data from `https://openrouter.ai/api/v1/models`
+- Filters to free models only
+- Shows provider, context window, difficulty, and practical use cases
+- Supports category filtering (Writing, Coding, Learning, Business, Creative)
 
-- Live model fetch on every load from `https://openrouter.ai/api/v1/models`
-- Only free models shown (supports OpenRouter zero-value strings like `"0"` and `"0.000000"`)
-- Rich product cards with:
-  - provider badges
-  - context-window explanation in plain English
-  - real-world use cases with emoji
-  - beginner/intermediate/power-user difficulty tags
-  - one-click “Try It Free” CTA
-
-## 🖥️ Live Demo
-
-> GitHub Pages: `https://<your-username>.github.io/ai-explorer/`
-
-## 🧭 Beginner Start Flow
-
-1. Pick a free model in AI Explorer.
-2. Get your free OpenRouter API key: https://openrouter.ai/settings/keys
-3. Paste your key into your favorite app/tool and start building.
-
-
-## 🚢 GitHub Pages Deployment (Fix for 404)
-
-If `https://arvind3.github.io/ai-explorer/` shows 404, ensure:
-
-1. Repository name is exactly `ai-explorer` (same spelling).
-2. Repo is pushed to GitHub and contains this project root (`index.html`, `style.css`, `app.js`).
-3. In **Settings → Pages**, source is set to **GitHub Actions**.
-4. Wait for the **Deploy static content to Pages** workflow to finish successfully.
-
-After deploy, app URL should be:
-
-- `https://arvind3.github.io/ai-explorer/`
-
-
-## ✅ Quality Gate (required for every PR)
-
-This repo now includes a built-in regression suite for core model-selection logic.
-
-- Run locally before opening/merging a PR:
+## Local development
 
 ```bash
+npm install
 npm test
 ```
 
-- GitHub Actions will also run this automatically on each push and pull request.
+## GitHub Pages deployment
 
-## 🛠️ Tech Stack
+This repository deploys from GitHub Actions using `.github/workflows/deploy-pages.yml`.
+
+One-time repository setup is still required:
+
+1. Open **Settings -> Pages**
+2. Set **Source** to **GitHub Actions**
+3. Rerun the **Deploy static content to Pages** workflow
+
+If this setup is missing, deploy preflight now fails with a direct error message instead of a vague workflow failure.
+
+## Quality gates (by design)
+
+All future PRs are validated through automation:
+
+1. `test.yml`: runs `npm ci` + `npm test` on push and pull request
+2. `deploy-pages.yml`: validates Pages configuration before deployment
+3. `live-smoke.yml`: verifies the deployed URL responds with expected page markers after a successful deploy
+
+You can also run the live smoke check manually:
+
+```bash
+npm run test:live
+```
+
+Set a custom URL if needed:
+
+```bash
+LIVE_URL=https://example.com/ npm run test:live
+```
+
+## Tech stack
 
 - HTML
 - CSS
 - Vanilla JavaScript
-- GitHub Pages hosting (no backend)
-
-## 📸 Screenshots
-
-Add screenshots after deploying (desktop + mobile recommended).
-
-## 🤝 Contributing / Suggesting Use Cases
-
-Got a better use case set for a model category?
-
-1. Fork the repo
-2. Update `use-cases.js`
-3. Open a pull request with your additions
-
-You can also open an issue with category + use case ideas.
-
-## 👤 Built by Arvind Bhardwaj
-
-Curated and built with ❤️ by **Arvind Bhardwaj**.
-
-- LinkedIn: https://www.linkedin.com/in/arvindkumarbhardwaj/
-- Mission: *Helping developers and learners unlock the power of AI — for free.*
-
-## 📄 License
-
-MIT
+- Node test runner (`node:test`)
+- jsdom for DOM-level tests
+- GitHub Actions + GitHub Pages
