@@ -25,6 +25,20 @@ Most model directories are built for experts. AI Explorer translates model specs
 2. Get your free OpenRouter API key: https://openrouter.ai/settings/keys
 3. Paste your key into your favorite app/tool and start building.
 
+
+## 🚢 GitHub Pages Deployment (Fix for 404)
+
+If `https://arvind3.github.io/ai-explorer/` shows 404, ensure:
+
+1. Repository name is exactly `ai-explorer` (same spelling).
+2. Repo is pushed to GitHub and contains this project root (`index.html`, `style.css`, `app.js`).
+3. In **Settings → Pages**, source is set to **GitHub Actions**.
+4. Wait for the **Deploy static content to Pages** workflow to finish successfully.
+
+After deploy, app URL should be:
+
+- `https://arvind3.github.io/ai-explorer/`
+
 ## 🛠️ Tech Stack
 
 - HTML
