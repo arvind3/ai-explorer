@@ -7,7 +7,7 @@ AI Explorer is a beautiful, mobile-first discovery platform that helps non-techn
 Most model directories are built for experts. AI Explorer translates model specs into practical language so anyone can get value quickly.
 
 - Live model fetch on every load from `https://openrouter.ai/api/v1/models`
-- Only free models shown (`pricing.prompt = 0` and `pricing.completion = 0`)
+- Only free models shown (supports OpenRouter zero-value strings like `"0"` and `"0.000000"`)
 - Rich product cards with:
   - provider badges
   - context-window explanation in plain English
@@ -38,6 +38,19 @@ If `https://arvind3.github.io/ai-explorer/` shows 404, ensure:
 After deploy, app URL should be:
 
 - `https://arvind3.github.io/ai-explorer/`
+
+
+## ✅ Quality Gate (required for every PR)
+
+This repo now includes a built-in regression suite for core model-selection logic.
+
+- Run locally before opening/merging a PR:
+
+```bash
+npm test
+```
+
+- GitHub Actions will also run this automatically on each push and pull request.
 
 ## 🛠️ Tech Stack
 
