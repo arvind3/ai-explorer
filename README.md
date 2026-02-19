@@ -28,12 +28,25 @@ One-time repository setup is still required:
 
 If this setup is missing, deploy preflight now fails with a direct error message instead of a vague workflow failure.
 
+If the Pages UI is not visible in your account, you can enable Pages by API:
+
+```bash
+curl -L -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer <ADMIN_TOKEN>" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  https://api.github.com/repos/arvind3/ai-explorer/pages \
+  -d '{"build_type":"workflow"}'
+```
+
+You can also set repository secret `PAGES_ENABLEMENT_TOKEN` (admin token) and the deploy workflow will attempt API enablement automatically.
+
 ## Quality gates (by design)
 
 All future PRs are validated through automation:
 
 1. `test.yml`: runs `npm ci` + `npm test` on push and pull request
-2. `deploy-pages.yml`: validates Pages configuration before deployment
+2. `deploy-pages.yml`: optionally enables Pages via API (if `PAGES_ENABLEMENT_TOKEN` exists), then validates config
 3. `live-smoke.yml`: verifies the deployed URL responds with expected page markers after a successful deploy
 
 You can also run the live smoke check manually:
