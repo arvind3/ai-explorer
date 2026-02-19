@@ -50,18 +50,6 @@ function assignDifficulty(contextLength) {
   return { label: "🔴 Power User", className: "difficulty-power" };
 }
 
-function chooseCategory(model) {
-  const source = `${model.id} ${model.name || ""}`.toLowerCase();
-
-  if (source.includes("code") || source.includes("coder") || source.includes("program")) return "Coding";
-  if (source.includes("vision") || source.includes("image") || source.includes("creative")) return "Creative";
-  if (source.includes("learn") || source.includes("edu") || source.includes("instruct")) return "Learning";
-  if (source.includes("chat") || source.includes("assistant")) return "Writing";
-
-  const categories = ["Writing", "Coding", "Learning", "Business", "Creative"];
-  return categories[Math.floor(Math.random() * categories.length)];
-}
-
 function titleCaseId(modelId) {
   return modelId
     .split("/")
@@ -114,7 +102,7 @@ function renderModels(models) {
       const provider = getProviderInfo(model);
       const contextExplain = formatContextWindow(model.context_length);
       const difficulty = assignDifficulty(model.context_length);
-      const category = chooseCategory(model);
+      const category = window.ModelUtils.chooseCategory(model);
       const useCases = window.MODEL_ENRICHMENTS.useCasesByCategory[category].slice(0, 4);
       const friendlyName = model.name || titleCaseId(model.id);
 
@@ -144,7 +132,7 @@ function applyFilter() {
     return;
   }
 
-  const filtered = allModels.filter((model) => chooseCategory(model) === selected);
+  const filtered = allModels.filter((model) => window.ModelUtils.chooseCategory(model) === selected);
   renderModels(filtered);
 }
 
@@ -165,11 +153,7 @@ async function fetchFreeModels() {
     const models = Array.isArray(payload.data) ? payload.data : [];
 
     allModels = models
-      .filter((model) => {
-        const promptPrice = String(model.pricing?.prompt ?? "");
-        const completionPrice = String(model.pricing?.completion ?? "");
-        return promptPrice === "0" && completionPrice === "0";
-      })
+      .filter((model) => window.ModelUtils.isFreeModel(model))
       .sort((a, b) => (b.context_length || 0) - (a.context_length || 0));
 
     animateCount(allModels.length);
