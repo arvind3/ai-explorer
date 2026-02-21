@@ -1,0 +1,8 @@
+# GitHub Pages configuration
+# Custom HTML pages — no Jekyll theme processing needed
+title: AI Explorer
+description: Discover free AI models — no cost, no credit card, no limits.
+url: "https://arvind3.github.io/ai-explorer"
+
+# Serve from /docs folder
+# (Configure in Settings → Pages → Source: Deploy from branch → /docs)

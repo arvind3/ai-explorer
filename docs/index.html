@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Explorer — Awareness Hub</title>
+  <meta name="description" content="Explore AI Explorer from four perspectives: Engineering, Product, Capability, and Executive. A free AI model discovery platform for every developer." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --bg: #07091a;
+      --purple: #8c52ff;
+      --cyan: #00d4ff;
+      --green: #42d392;
+      --amber: #f5b72f;
+      --text: #eef1ff;
+      --muted: #8a97c8;
+      --border: rgba(255,255,255,0.09);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text); overflow-x: hidden; }
+    h1,h2,h3,h4 { font-family: 'Space Grotesk', sans-serif; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+    @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .fade-up { animation: fadeUp 0.8s ease forwards; }
+    .fade-up-2 { animation: fadeUp 0.8s 0.15s ease forwards; opacity: 0; }
+    .fade-up-3 { animation: fadeUp 0.8s 0.3s ease forwards; opacity: 0; }
+    .orb { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
+    .card-hover { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+    .card-hover:hover { transform: translateY(-6px); }
+    a { text-decoration: none; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const NAV_LINKS = [
+  { label: "Engineering", href: "engineering.html" },
+  { label: "Product",     href: "product.html" },
+  { label: "Capability",  href: "capability.html" },
+  { label: "Executive",   href: "executive.html" },
+];
+
+const PAGES = [
+  {
+    title: "Engineering",
+    href: "engineering.html",
+    audience: "Developers & Architects",
+    desc: "Deep-dive into the zero-build architecture, live API integration, dependency-injection test pattern, and deterministic categorization engine.",
+    accent: "#8c52ff",
+    icon: "⚙️",
+    cta: "Read Engineering View",
+    bg: "rgba(140,82,255,0.08)",
+    border: "rgba(140,82,255,0.25)",
+  },
+  {
+    title: "Product",
+    href: "product.html",
+    audience: "Product Managers & Users",
+    desc: "Understand the pain of API cost barriers, the user journey from discovery to first working prototype, and the features that democratize AI access.",
+    accent: "#00d4ff",
+    icon: "🚀",
+    cta: "Read Product View",
+    bg: "rgba(0,212,255,0.06)",
+    border: "rgba(0,212,255,0.22)",
+  },
+  {
+    title: "Capability",
+    href: "capability.html",
+    audience: "Business Strategists",
+    desc: "Explore cross-domain applications across enterprise, education, and startups — and the platform opportunity at the intersection of open AI and developer productivity.",
+    accent: "#42d392",
+    icon: "🌐",
+    cta: "Read Capability View",
+    bg: "rgba(66,211,146,0.06)",
+    border: "rgba(66,211,146,0.22)",
+  },
+  {
+    title: "Executive",
+    href: "executive.html",
+    audience: "C-Suite & Leadership",
+    desc: "Market opportunity, strategic positioning, and the founder's thesis on why innovation must not be gated by API budgets.",
+    accent: "#f5b72f",
+    icon: "📊",
+    cta: "Read Executive View",
+    bg: "rgba(245,183,47,0.06)",
+    border: "rgba(245,183,47,0.22)",
+  },
+];
+
+const STATS = [
+  { value: "50+", label: "Free AI Models", sub: "live-updated" },
+  { value: "5",   label: "Use Case Categories", sub: "Writing · Coding · Learning · Business · Creative" },
+  { value: "8+",  label: "AI Providers", sub: "Google, Meta, OpenAI, Anthropic & more" },
+  { value: "$0",  label: "Cost to Start", sub: "no credit card ever" },
+];
+
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+  return (
+    <nav style={{
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+      background: scrolled ? 'rgba(7,9,26,0.95)' : 'rgba(7,9,26,0.6)',
+      backdropFilter: 'blur(20px)',
+      borderBottom: `1px solid ${scrolled ? 'rgba(255,255,255,0.1)' : 'transparent'}`,
+      transition: 'all 0.3s ease',
+      padding: '0.85rem 1.5rem',
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    }}>
+      <a href="index.html" style={{fontFamily: "'Space Grotesk',sans-serif", fontWeight: 800, color: '#eef1ff', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem'}}>
+        <span style={{background: 'linear-gradient(90deg,#8c52ff,#00d4ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>✦</span> AI Explorer
+      </a>
+      <div style={{display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap'}}>
+        {NAV_LINKS.map(l => (
+          <a key={l.label} href={l.href} style={{color: '#8a97c8', fontSize: '0.875rem', fontWeight: 500, transition: 'color 0.2s'}}
+            onMouseEnter={e => e.target.style.color='#eef1ff'}
+            onMouseLeave={e => e.target.style.color='#8a97c8'}>
+            {l.label}
+          </a>
+        ))}
+        <a href="https://github.com/arvind3/ai-explorer" target="_blank" rel="noreferrer"
+          style={{background: 'linear-gradient(135deg,#8c52ff,#00d4ff)', color: '#fff', padding: '0.4rem 1rem', borderRadius: '8px', fontWeight: 700, fontSize: '0.85rem'}}>
+          ★ GitHub
+        </a>
+      </div>
+    </nav>
+  );
+}
+
+function Hero() {
+  return (
+    <section style={{position: 'relative', paddingTop: '9rem', paddingBottom: '4rem', textAlign: 'center', zIndex: 1, padding: '9rem 1.5rem 4rem'}}>
+      <div className="fade-up">
+        <span style={{display: 'inline-block', background: 'rgba(140,82,255,0.12)', border: '1px solid rgba(140,82,255,0.3)', borderRadius: '999px', padding: '0.3rem 1.1rem', fontSize: '0.78rem', color: '#c4a0ff', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '1.75rem'}}>
+          Awareness Hub · 4 Perspectives
+        </span>
+      </div>
+      <h1 className="fade-up-2" style={{fontSize: 'clamp(2.4rem,5.5vw,4rem)', fontWeight: 800, lineHeight: 1.1, maxWidth: '820px', margin: '0 auto 1.5rem'}}>
+        Every Developer Deserves<br />
+        <span style={{background: 'linear-gradient(90deg,#8c52ff,#00d4ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>
+          Free AI Superpowers
+        </span>
+      </h1>
+      <p className="fade-up-3" style={{color: '#8a97c8', maxWidth: '54ch', margin: '0 auto 2.5rem', fontSize: '1.1rem', lineHeight: 1.75}}>
+        AI Explorer is a live-updating discovery platform that surfaces every free AI model on OpenRouter — explained in plain language, organized by use case, accessible to anyone.
+      </p>
+      <div className="fade-up-3" style={{display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap'}}>
+        <a href="https://arvind3.github.io/ai-explorer/" target="_blank" rel="noreferrer"
+          style={{background: 'linear-gradient(135deg,#8c52ff,#00d4ff)', color: '#fff', padding: '0.85rem 2rem', borderRadius: '12px', fontWeight: 700, fontSize: '1rem'}}>
+          Launch the App →
+        </a>
+        <a href="https://github.com/arvind3/ai-explorer" target="_blank" rel="noreferrer"
+          style={{background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#eef1ff', padding: '0.85rem 2rem', borderRadius: '12px', fontWeight: 600, fontSize: '1rem'}}>
+          ★ View Source
+        </a>
+      </div>
+    </section>
+  );
+}
+
+function StatsBar() {
+  return (
+    <div style={{maxWidth: '900px', margin: '0 auto 4rem', padding: '0 1.5rem', position: 'relative', zIndex: 1}}>
+      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '1rem'}}>
+        {STATS.map(s => (
+          <div key={s.label} style={{background: 'rgba(14,18,42,0.75)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '1.5rem', textAlign: 'center'}}>
+            <div style={{fontFamily: "'Space Grotesk',sans-serif", fontSize: '2.2rem', fontWeight: 800, background: 'linear-gradient(90deg,#8c52ff,#00d4ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', lineHeight: 1.1}}>
+              {s.value}
+            </div>
+            <div style={{color: '#eef1ff', fontWeight: 600, marginTop: '0.4rem', fontSize: '0.9rem'}}>{s.label}</div>
+            <div style={{color: '#8a97c8', fontSize: '0.75rem', marginTop: '0.25rem'}}>{s.sub}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PageCards() {
+  return (
+    <section style={{maxWidth: '1160px', margin: '0 auto', padding: '0 1.5rem 5rem', position: 'relative', zIndex: 1}}>
+      <div style={{textAlign: 'center', marginBottom: '2.5rem'}}>
+        <h2 style={{fontSize: '1.75rem', fontWeight: 700, color: '#eef1ff', marginBottom: '0.5rem'}}>Explore by Perspective</h2>
+        <p style={{color: '#8a97c8', fontSize: '0.95rem'}}>Four lenses. One platform. Choose your viewpoint.</p>
+      </div>
+      <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: '1.25rem'}}>
+        {PAGES.map(p => (
+          <a key={p.title} href={p.href} className="card-hover" style={{
+            background: p.bg,
+            border: `1px solid ${p.border}`,
+            borderRadius: '20px',
+            padding: '2rem',
+            display: 'block',
+          }}
+            onMouseEnter={e => e.currentTarget.style.boxShadow = `0 20px 50px ${p.accent}18`}
+            onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}>
+            <div style={{fontSize: '2.2rem', marginBottom: '1rem'}}>{p.icon}</div>
+            <div style={{display: 'inline-block', padding: '0.2rem 0.65rem', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 600, background: p.accent + '18', color: p.accent, marginBottom: '0.75rem', letterSpacing: '0.03em'}}>
+              {p.audience}
+            </div>
+            <h3 style={{color: '#eef1ff', fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.75rem'}}>{p.title} Perspective</h3>
+            <p style={{color: '#8a97c8', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: '1.5rem'}}>{p.desc}</p>
+            <span style={{color: p.accent, fontSize: '0.875rem', fontWeight: 700}}>{p.cta} →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer style={{borderTop: '1px solid rgba(255,255,255,0.07)', padding: '2.5rem 1.5rem', textAlign: 'center', color: '#8a97c8', position: 'relative', zIndex: 1}}>
+      <p style={{marginBottom: '0.5rem', fontSize: '0.9rem'}}>
+        <strong style={{color: '#eef1ff'}}>AI Explorer</strong> — Built by Arvind Bhardwaj &nbsp;·&nbsp; Awareness Hub
+      </p>
+      <p style={{fontSize: '0.85rem'}}>
+        <a href="https://github.com/arvind3/ai-explorer" target="_blank" rel="noreferrer" style={{color: '#8c52ff', fontWeight: 600}}>⭐ github.com/arvind3/ai-explorer</a>
+      </p>
+    </footer>
+  );
+}
+
+function App() {
+  return (
+    <div style={{minHeight: '100vh', background: 'radial-gradient(circle at 20% 10%, #14183a 0%, #07091a 55%)'}}>
+      <div className="orb" style={{width: '500px', height: '500px', background: 'rgba(140,82,255,0.15)', left: '-150px', top: '-150px'}} />
+      <div className="orb" style={{width: '400px', height: '400px', background: 'rgba(0,212,255,0.12)', right: '-100px', top: '250px'}} />
+      <Nav />
+      <Hero />
+      <StatsBar />
+      <PageCards />
+      <Footer />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
