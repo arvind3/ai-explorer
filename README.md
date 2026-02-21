@@ -2,6 +2,37 @@
 
 AI Explorer is a mobile-first discovery site for finding **free AI models** from OpenRouter.
 
+---
+
+## Awareness Pages — Start Here
+
+> **Sharing this project?** Send the Executive Summary link — it tells the full story in 2 minutes and links to all other pages from its navigation bar.
+
+### Executive Summary (primary shareable link)
+
+**[https://arvind3.github.io/ai-explorer/docs/executive.html](https://arvind3.github.io/ai-explorer/docs/executive.html)**
+
+The executive page covers:
+- The market opportunity — why free AI access matters at scale
+- What AI Explorer does and who it is for
+- Strategic value and platform potential
+- The founder's vision in their own words
+- Navigation bar at the top links to all other pages
+
+### All Awareness Pages
+
+| Page | Link | Best for |
+|------|------|----------|
+| **Hub** | [/docs/](https://arvind3.github.io/ai-explorer/docs/) | Anyone — overview with links to all perspectives |
+| **Executive** | [/docs/executive.html](https://arvind3.github.io/ai-explorer/docs/executive.html) | C-suite, investors, leadership, partners |
+| **Product** | [/docs/product.html](https://arvind3.github.io/ai-explorer/docs/product.html) | Product managers, end users, stakeholders |
+| **Engineering** | [/docs/engineering.html](https://arvind3.github.io/ai-explorer/docs/engineering.html) | Developers, architects, technical reviewers |
+| **Capability** | [/docs/capability.html](https://arvind3.github.io/ai-explorer/docs/capability.html) | Business strategists, partners, enterprise teams |
+
+Each page is self-contained with a top navigation bar that links to all others — a user who lands on the Executive page can navigate directly to Engineering or Product without needing to come back here.
+
+---
+
 ## What it does
 
 - Fetches live model data from `https://openrouter.ai/api/v1/models`
@@ -69,3 +100,7 @@ LIVE_URL=https://example.com/ npm run test:live
 - Node test runner (`node:test`)
 - jsdom for DOM-level tests
 - GitHub Actions + GitHub Pages
+
+---
+
+*Built by [Arvind Bhardwaj](https://www.linkedin.com/in/arvindkumarbhardwaj/) · Helping developers unlock the power of AI — for free.*
