@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Explorer — Executive Summary</title>
+  <meta name="description" content="Executive summary: AI Explorer's market opportunity, strategic value, and the founder's case for democratizing AI access across every developer and organization." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --bg: #07091a; --purple: #8c52ff; --cyan: #00d4ff;
+      --green: #42d392; --amber: #f5b72f;
+      --text: #eef1ff; --muted: #8a97c8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text); overflow-x: hidden; }
+    h1,h2,h3,h4 { font-family: 'Space Grotesk', sans-serif; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.7s ease forwards; }
+    .fade-up-d1 { animation: fadeUp 0.7s 0.1s ease forwards; opacity: 0; }
+    .fade-up-d2 { animation: fadeUp 0.7s 0.2s ease forwards; opacity: 0; }
+    .orb { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
+    a { text-decoration: none; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const NAV_LINKS = [
+  { label:"Hub",         href:"index.html" },
+  { label:"Engineering", href:"engineering.html" },
+  { label:"Product",     href:"product.html" },
+  { label:"Capability",  href:"capability.html" },
+  { label:"Executive",   href:"executive.html" },
+];
+
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+  return (
+    <nav style={{
+      position:'fixed',top:0,left:0,right:0,zIndex:100,
+      background: scrolled ? 'rgba(7,9,26,0.97)' : 'rgba(7,9,26,0.65)',
+      backdropFilter:'blur(20px)',
+      borderBottom:`1px solid ${scrolled?'rgba(255,255,255,0.1)':'transparent'}`,
+      transition:'all 0.3s',padding:'0.85rem 1.5rem',
+      display:'flex',alignItems:'center',justifyContent:'space-between',
+    }}>
+      <a href="index.html" style={{fontFamily:"'Space Grotesk',sans-serif",fontWeight:800,color:'#eef1ff',display:'flex',alignItems:'center',gap:'0.4rem'}}>
+        <span style={{background:'linear-gradient(90deg,#8c52ff,#00d4ff)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>✦</span> AI Explorer
+      </a>
+      <div style={{display:'flex',alignItems:'center',gap:'1.25rem',flexWrap:'wrap'}}>
+        {NAV_LINKS.map(l => (
+          <a key={l.label} href={l.href} style={{color:l.label==='Executive'?'#eef1ff':'#8a97c8',fontSize:'0.875rem',fontWeight:l.label==='Executive'?700:500,transition:'color 0.2s'}}
+            onMouseEnter={e=>e.target.style.color='#eef1ff'}
+            onMouseLeave={e=>e.target.style.color=l.label==='Executive'?'#eef1ff':'#8a97c8'}>
+            {l.label}
+          </a>
+        ))}
+        <a href="https://github.com/arvind3/ai-explorer" target="_blank" rel="noreferrer"
+          style={{background:'linear-gradient(135deg,#8c52ff,#00d4ff)',color:'#fff',padding:'0.4rem 1rem',borderRadius:'8px',fontWeight:700,fontSize:'0.85rem'}}>
+          ★ GitHub
+        </a>
+      </div>
+    </nav>
+  );
+}
+
+function Hero() {
+  return (
+    <section style={{position:'relative',padding:'9rem 1.5rem 5rem',zIndex:1}}>
+      <div style={{maxWidth:'860px',margin:'0 auto',textAlign:'center'}}>
+        <div className="fade-up" style={{marginBottom:'1.5rem'}}>
+          <span style={{display:'inline-flex',alignItems:'center',gap:'0.4rem',background:'rgba(245,183,47,0.08)',border:'1px solid rgba(245,183,47,0.25)',borderRadius:'999px',padding:'0.3rem 1rem',fontSize:'0.78rem',color:'#f5b72f',letterSpacing:'0.05em',textTransform:'uppercase'}}>
+            📊 Executive Summary
+          </span>
+        </div>
+        <h1 className="fade-up-d1" style={{fontSize:'clamp(2rem,4.5vw,3.4rem)',fontWeight:800,lineHeight:1.15,marginBottom:'1.5rem'}}>
+          Innovation shouldn't have
+          <br />
+          <span style={{background:'linear-gradient(90deg,#f5b72f,#f2667a)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>
+            a price tag
+          </span>
+        </h1>
+        <p className="fade-up-d2" style={{color:'#8a97c8',fontSize:'1.1rem',lineHeight:1.8,maxWidth:'58ch',margin:'0 auto'}}>
+          AI Explorer makes the world's best free AI models discoverable, understandable, and immediately usable — for every developer, in every organization, at every budget level.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function Opportunity() {
+  const points = [
+    { stat:'27M+', label:'Professional developers worldwide who could benefit from free AI access*', color:'#f5b72f' },
+    { stat:'$500–5K', label:'Monthly API spend per enterprise team to experiment with commercial AI models*', color:'#f2667a' },
+    { stat:'2–6 wks', label:'Typical enterprise procurement cycle before a developer can access a paid AI API*', color:'#8c52ff' },
+    { stat:'50+', label:'Free production-grade AI models available today — largely undiscovered by most developers', color:'#42d392' },
+  ];
+  return (
+    <section style={{maxWidth:'900px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,color:'#eef1ff',marginBottom:'1.25rem'}}>The Opportunity</h2>
+      <p style={{color:'#8a97c8',lineHeight:1.85,fontSize:'1rem',marginBottom:'2rem'}}>
+        The generative AI revolution is happening unevenly. Elite engineering teams at well-funded companies have unrestricted access to the most powerful models. Everyone else — junior developers, enterprise teams awaiting budget approval, students, non-profits, developers in emerging markets — is locked out by pricing barriers that are, in many cases, entirely unnecessary. Dozens of world-class AI models are completely free. They simply aren't visible. AI Explorer closes this visibility gap at scale.
+      </p>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:'1rem'}}>
+        {points.map(p => (
+          <div key={p.label} style={{background:'rgba(14,18,42,0.75)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:'16px',padding:'1.5rem'}}>
+            <div style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:'2rem',fontWeight:800,color:p.color,lineHeight:1,marginBottom:'0.5rem'}}>{p.stat}</div>
+            <p style={{color:'#8a97c8',fontSize:'0.8rem',lineHeight:1.6}}>{p.label}</p>
+          </div>
+        ))}
+      </div>
+      <p style={{color:'#8a97c8',fontSize:'0.75rem',marginTop:'1rem'}}>* = market estimates based on industry research and developer ecosystem data.</p>
+    </section>
+  );
+}
+
+function WhatWeBuilt() {
+  return (
+    <section style={{maxWidth:'900px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,color:'#eef1ff',marginBottom:'1.25rem'}}>What We Built</h2>
+      <div style={{background:'rgba(14,18,42,0.75)',border:'1px solid rgba(255,255,255,0.08)',borderRadius:'20px',padding:'2.5rem'}}>
+        <p style={{color:'#c4d4ff',fontSize:'1.1rem',lineHeight:1.85,marginBottom:'1.25rem'}}>
+          <strong style={{color:'#eef1ff'}}>AI Explorer is a live AI model discovery platform</strong> that fetches the complete free-tier model catalog from OpenRouter on every page load, filters it to zero-cost models, and presents it in plain language — organized by use case, rated by difficulty, and linked directly to a zero-friction testing environment.
+        </p>
+        <p style={{color:'#c4d4ff',fontSize:'1.1rem',lineHeight:1.85,marginBottom:'1.25rem'}}>
+          It is built for every developer — from the student writing their first AI program to the enterprise engineer blocked by procurement — and runs at <strong style={{color:'#eef1ff'}}>zero infrastructure cost</strong> via GitHub Pages.
+        </p>
+        <p style={{color:'#c4d4ff',fontSize:'1.1rem',lineHeight:1.85}}>
+          The result: a developer goes from "I want to try AI" to "I have a working prototype" in under one hour, for free, using production-grade models from Google, Meta, Mistral, DeepSeek, and Anthropic.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function Traction() {
+  const items = [
+    { icon:'🟢', label:'Production-ready architecture', detail:'Static site + GitHub Actions CI/CD + live smoke tests. Built to enterprise engineering standards.', color:'#42d392' },
+    { icon:'🧪', label:'Automated quality gates', detail:'3-workflow GitHub Actions pipeline ensures every change is tested before deployment. Zero manual release process.', color:'#00d4ff' },
+    { icon:'⚡', label:'50+ free models surfaced', detail:'Live-queried from OpenRouter on every page load. Catalog grows automatically as providers add free tiers.*', color:'#f5b72f' },
+    { icon:'🌍', label:'8+ AI provider coverage', detail:'Google, Meta, OpenAI, Anthropic, Mistral, DeepSeek, Microsoft, Qwen — the full spectrum of leading AI labs.*', color:'#8c52ff' },
+    { icon:'📱', label:'Mobile-first responsive', detail:'Built for every device. Developers discover AI models wherever they are — commute, desk, or classroom.', color:'#f2667a' },
+    { icon:'🔒', label:'Zero infrastructure cost', detail:'GitHub Pages CDN hosting. No server, no database, no cloud bill. Scales to any traffic level by default.*', color:'#c4a0ff' },
+  ];
+  return (
+    <section style={{maxWidth:'900px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,color:'#eef1ff',marginBottom:'1.25rem'}}>Traction & Evidence</h2>
+      <p style={{color:'#8a97c8',lineHeight:1.7,marginBottom:'2rem'}}>Capability indicators demonstrating production readiness and platform potential.</p>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:'1rem'}}>
+        {items.map(it => (
+          <div key={it.label} style={{background:'rgba(14,18,42,0.75)',border:`1px solid ${it.color}22`,borderRadius:'16px',padding:'1.5rem',display:'flex',gap:'1rem',alignItems:'flex-start'}}>
+            <div style={{fontSize:'1.5rem',flexShrink:0}}>{it.icon}</div>
+            <div>
+              <div style={{color:it.color,fontWeight:700,fontSize:'0.9rem',marginBottom:'0.35rem'}}>{it.label}</div>
+              <p style={{color:'#8a97c8',fontSize:'0.82rem',lineHeight:1.6}}>{it.detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p style={{color:'#8a97c8',fontSize:'0.75rem',marginTop:'1rem'}}>* = based on current architecture capabilities and OpenRouter catalog growth trends.</p>
+    </section>
+  );
+}
+
+function StrategicValue() {
+  return (
+    <section style={{maxWidth:'900px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,color:'#eef1ff',marginBottom:'1.25rem'}}>Strategic Value</h2>
+      <div style={{display:'flex',flexDirection:'column',gap:'1.25rem'}}>
+        {[
+          {
+            title:'Developer Mindshare at Zero Cost',
+            color:'#8c52ff',
+            detail:'AI Explorer creates a direct relationship with developers at the earliest stage of their AI journey — when they\'re choosing which tools and ecosystems to invest in. Building that trust at zero cost creates a durable competitive position.*',
+          },
+          {
+            title:'The Discovery Layer in the AI Stack',
+            color:'#00d4ff',
+            detail:'As the number of AI models explodes, the bottleneck shifts from model quality to model discoverability. AI Explorer is positioned exactly at this bottleneck — the interface between developers and the AI model economy.',
+          },
+          {
+            title:'Open Architecture = Platform Potential',
+            color:'#42d392',
+            detail:'The same live-query architecture that powers AI Explorer today can evolve into a model routing API — queryable by AI agents, developer tools, and platforms that need intelligent, real-time model selection without commercial API spend.',
+          },
+          {
+            title:'Compounding Network Effect',
+            color:'#f5b72f',
+            detail:'Every developer who finds a free model through AI Explorer and succeeds with it becomes a proof point and potential advocate. The value of the platform increases with every successful developer outcome.*',
+          },
+        ].map(s => (
+          <div key={s.title} style={{background:`${s.color}08`,border:`1px solid ${s.color}22`,borderLeft:`3px solid ${s.color}`,borderRadius:'0 16px 16px 0',padding:'1.5rem 2rem'}}>
+            <h3 style={{color:'#eef1ff',fontWeight:700,fontSize:'1rem',marginBottom:'0.5rem'}}>{s.title}</h3>
+            <p style={{color:'#8a97c8',fontSize:'0.875rem',lineHeight:1.7}}>{s.detail}</p>
+          </div>
+        ))}
+      </div>
+      <p style={{color:'#8a97c8',fontSize:'0.75rem',marginTop:'1rem'}}>* = strategic assessment based on current market dynamics.</p>
+    </section>
+  );
+}
+
+function TheAsk() {
+  const actions = [
+    { icon:'⭐', title:'Star the Repository', desc:'Signal support, increase visibility in the developer community, and follow future releases.', href:'https://github.com/arvind3/ai-explorer', label:'Star on GitHub', color:'#f5b72f' },
+    { icon:'🚀', title:'Deploy for Your Team', desc:'Fork AI Explorer and deploy it for your organization\'s developers. Zero infrastructure cost, immediate impact.', href:'https://github.com/arvind3/ai-explorer', label:'Fork & Deploy', color:'#8c52ff' },
+    { icon:'🤝', title:'Collaborate & Contribute', desc:'Open issues, submit PRs, or integrate AI Explorer into your developer toolchain or educational platform.', href:'https://github.com/arvind3/ai-explorer/issues', label:'Open a Discussion', color:'#42d392' },
+  ];
+  return (
+    <section style={{maxWidth:'900px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,color:'#eef1ff',marginBottom:'1.25rem'}}>The Ask</h2>
+      <p style={{color:'#8a97c8',lineHeight:1.7,marginBottom:'2rem'}}>Three ways to be part of the mission to democratize AI access.</p>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:'1.25rem'}}>
+        {actions.map(a => (
+          <div key={a.title} style={{background:'rgba(14,18,42,0.75)',border:`1px solid ${a.color}22`,borderRadius:'18px',padding:'2rem',display:'flex',flexDirection:'column',gap:'1rem'}}>
+            <div style={{fontSize:'2rem'}}>{a.icon}</div>
+            <div>
+              <h3 style={{color:'#eef1ff',fontWeight:700,fontSize:'1rem',marginBottom:'0.5rem'}}>{a.title}</h3>
+              <p style={{color:'#8a97c8',fontSize:'0.85rem',lineHeight:1.6}}>{a.desc}</p>
+            </div>
+            <a href={a.href} target="_blank" rel="noreferrer" style={{marginTop:'auto',background:`${a.color}18`,border:`1px solid ${a.color}30`,color:a.color,padding:'0.6rem 1.25rem',borderRadius:'10px',fontWeight:700,fontSize:'0.85rem',textAlign:'center'}}>
+              {a.label} →
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FounderQuote() {
+  return (
+    <section style={{maxWidth:'860px',margin:'0 auto',padding:'0 1.5rem 6rem',position:'relative',zIndex:1}}>
+      <div style={{
+        background:'linear-gradient(135deg,rgba(245,183,47,0.08),rgba(140,82,255,0.08))',
+        border:'1px solid rgba(245,183,47,0.2)',
+        borderRadius:'20px',
+        padding:'3rem',
+        position:'relative',
+        overflow:'hidden',
+      }}>
+        <div style={{position:'absolute',top:'1.5rem',left:'2rem',fontSize:'5rem',color:'rgba(245,183,47,0.15)',fontFamily:'Georgia,serif',lineHeight:1}}>❝</div>
+        <blockquote style={{position:'relative',zIndex:1,marginBottom:'1.5rem'}}>
+          <p style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:'clamp(1.1rem,2.5vw,1.4rem)',fontWeight:600,color:'#eef1ff',lineHeight:1.7,fontStyle:'italic'}}>
+            "I built AI Explorer because I saw brilliant developers — in enterprises, in classrooms, in emerging markets — unable to experiment with AI simply because they couldn't pay for API access. The models they needed were free. They just couldn't find them. My bigger vision is simple: every developer on Earth should have the same access to AI as the best-funded teams. Not tomorrow. Today. For free."
+          </p>
+        </blockquote>
+        <div style={{display:'flex',alignItems:'center',gap:'1rem'}}>
+          <div style={{width:'44px',height:'44px',borderRadius:'50%',background:'linear-gradient(135deg,#8c52ff,#00d4ff)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,color:'#fff',fontSize:'1.1rem',flexShrink:0}}>
+            A
+          </div>
+          <div>
+            <div style={{color:'#eef1ff',fontWeight:700,fontSize:'0.95rem'}}>Arvind Bhardwaj</div>
+            <div style={{color:'#8a97c8',fontSize:'0.82rem'}}>Founder, AI Explorer &nbsp;·&nbsp;
+              <a href="https://www.linkedin.com/in/arvindkumarbhardwaj/" target="_blank" rel="noreferrer" style={{color:'#00d4ff'}}>LinkedIn</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer style={{borderTop:'1px solid rgba(255,255,255,0.07)',padding:'2.5rem 1.5rem',textAlign:'center',color:'#8a97c8',position:'relative',zIndex:1}}>
+      <p style={{marginBottom:'0.5rem',fontSize:'0.9rem'}}>
+        <strong style={{color:'#eef1ff'}}>AI Explorer</strong> — Built by Arvind Bhardwaj &nbsp;·&nbsp; Executive Summary
+      </p>
+      <p style={{fontSize:'0.85rem'}}>
+        <a href="https://github.com/arvind3/ai-explorer" target="_blank" rel="noreferrer" style={{color:'#f5b72f',fontWeight:600}}>⭐ github.com/arvind3/ai-explorer</a>
+        &nbsp;·&nbsp;
+        <a href="index.html" style={{color:'#8a97c8'}}>← Back to Hub</a>
+      </p>
+    </footer>
+  );
+}
+
+function App() {
+  return (
+    <div style={{minHeight:'100vh',background:'radial-gradient(circle at 25% 15%, #1a150a 0%, #07091a 55%)'}}>
+      <div className="orb" style={{width:'450px',height:'450px',background:'rgba(245,183,47,0.08)',left:'-100px',top:'-100px'}} />
+      <div className="orb" style={{width:'350px',height:'350px',background:'rgba(140,82,255,0.1)',right:'-80px',top:'350px'}} />
+      <Nav />
+      <Hero />
+      <Opportunity />
+      <WhatWeBuilt />
+      <Traction />
+      <StrategicValue />
+      <TheAsk />
+      <FounderQuote />
+      <Footer />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

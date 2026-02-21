@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Explorer — Engineering Perspective</title>
+  <meta name="description" content="Technical deep-dive into AI Explorer: zero-build architecture, live OpenRouter API integration, dependency injection testing, and deterministic categorization." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --bg: #07091a; --purple: #8c52ff; --cyan: #00d4ff;
+      --green: #42d392; --amber: #f5b72f; --red: #f2667a;
+      --text: #eef1ff; --muted: #8a97c8; --border: rgba(255,255,255,0.09);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text); overflow-x: hidden; }
+    h1,h2,h3,h4 { font-family: 'Space Grotesk', sans-serif; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.7s ease forwards; }
+    .fade-up-d1 { animation: fadeUp 0.7s 0.1s ease forwards; opacity: 0; }
+    .fade-up-d2 { animation: fadeUp 0.7s 0.2s ease forwards; opacity: 0; }
+    .orb { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
+    a { text-decoration: none; }
+    pre { overflow-x: auto; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const NAV_LINKS = [
+  { label: "Hub",         href: "index.html" },
+  { label: "Engineering", href: "engineering.html" },
+  { label: "Product",     href: "product.html" },
+  { label: "Capability",  href: "capability.html" },
+  { label: "Executive",   href: "executive.html" },
+];
+
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+  return (
+    <nav style={{
+      position:'fixed',top:0,left:0,right:0,zIndex:100,
+      background: scrolled ? 'rgba(7,9,26,0.97)' : 'rgba(7,9,26,0.65)',
+      backdropFilter:'blur(20px)',
+      borderBottom:`1px solid ${scrolled?'rgba(255,255,255,0.1)':'transparent'}`,
+      transition:'all 0.3s',padding:'0.85rem 1.5rem',
+      display:'flex',alignItems:'center',justifyContent:'space-between',
+    }}>
+      <a href="index.html" style={{fontFamily:"'Space Grotesk',sans-serif",fontWeight:800,color:'#eef1ff',display:'flex',alignItems:'center',gap:'0.4rem'}}>
+        <span style={{background:'linear-gradient(90deg,#8c52ff,#00d4ff)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>✦</span> AI Explorer
+      </a>
+      <div style={{display:'flex',alignItems:'center',gap:'1.25rem',flexWrap:'wrap'}}>
+        {NAV_LINKS.map(l => (
+          <a key={l.label} href={l.href} style={{color: l.label==='Engineering'?'#eef1ff':'#8a97c8',fontSize:'0.875rem',fontWeight:l.label==='Engineering'?700:500,transition:'color 0.2s'}}
+            onMouseEnter={e=>e.target.style.color='#eef1ff'}
+            onMouseLeave={e=>e.target.style.color=l.label==='Engineering'?'#eef1ff':'#8a97c8'}>
+            {l.label}
+          </a>
+        ))}
+        <a href="https://github.com/arvind3/ai-explorer" target="_blank" rel="noreferrer"
+          style={{background:'linear-gradient(135deg,#8c52ff,#00d4ff)',color:'#fff',padding:'0.4rem 1rem',borderRadius:'8px',fontWeight:700,fontSize:'0.85rem'}}>
+          ★ GitHub
+        </a>
+      </div>
+    </nav>
+  );
+}
+
+function Hero() {
+  return (
+    <section style={{position:'relative',padding:'9rem 1.5rem 5rem',zIndex:1}}>
+      <div style={{maxWidth:'900px',margin:'0 auto'}}>
+        <div className="fade-up" style={{marginBottom:'1.5rem'}}>
+          <span style={{display:'inline-flex',alignItems:'center',gap:'0.4rem',background:'rgba(140,82,255,0.1)',border:'1px solid rgba(140,82,255,0.3)',borderRadius:'999px',padding:'0.3rem 1rem',fontSize:'0.78rem',color:'#c4a0ff',letterSpacing:'0.05em',textTransform:'uppercase'}}>
+            ⚙️ Engineering Perspective
+          </span>
+        </div>
+        <h1 className="fade-up-d1" style={{fontSize:'clamp(2rem,4.5vw,3.4rem)',fontWeight:800,lineHeight:1.1,marginBottom:'1.5rem'}}>
+          A live-query AI discovery engine<br />
+          <span style={{background:'linear-gradient(90deg,#8c52ff,#00d4ff)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>
+            built for zero-friction integration
+          </span>
+        </h1>
+        <p className="fade-up-d2" style={{color:'#8a97c8',fontSize:'1.1rem',lineHeight:1.8,maxWidth:'64ch'}}>
+          AI Explorer is a production-grade static site that hits the OpenRouter REST API on every page load, filters models to free-only using pricing constraints, enriches them with human-readable metadata, and renders a fully responsive discovery UI — with no build step, no server, and no dependencies beyond <code style={{color:'#c4a0ff',background:'rgba(140,82,255,0.12)',padding:'0.1rem 0.4rem',borderRadius:'4px'}}>jsdom</code> in tests.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function ArchSection() {
+  const boxes = [
+    { id:'browser', label:'Browser / GitHub Pages', sub:'Static HTML + CSS + JS', color:'#8c52ff', x:0 },
+    { id:'app', label:'app.js — createApp()', sub:'Dependency-injected app factory', color:'#7c8aff', x:1 },
+    { id:'api', label:'OpenRouter API', sub:'GET /api/v1/models (live)', color:'#00d4ff', x:2 },
+    { id:'filter', label:'isFreeModel()', sub:'prompt ≤ $0 AND completion ≤ $0', color:'#42d392', x:3 },
+    { id:'enrich', label:'chooseCategory() + enrichments', sub:'Keyword match → hash fallback', color:'#f5b72f', x:4 },
+    { id:'dom', label:'DOM Renderer', sub:'Cards + filter + animated counter', color:'#f2667a', x:5 },
+  ];
+  return (
+    <section style={{maxWidth:'960px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,marginBottom:'0.75rem',color:'#eef1ff'}}>Architecture Overview</h2>
+      <p style={{color:'#8a97c8',marginBottom:'2.5rem',lineHeight:1.7}}>
+        Six composable stages form the complete data pipeline — from static file delivery through live API fetch to animated card render. No framework. No bundler. No build step.
+      </p>
+      <div style={{display:'flex',flexDirection:'column',gap:'0.6rem'}}>
+        {boxes.map((b, i) => (
+          <div key={b.id} style={{display:'flex',alignItems:'center',gap:'1rem'}}>
+            <div style={{width:'2rem',height:'2rem',borderRadius:'50%',background:b.color,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:'0.8rem',color:'#07091a',flexShrink:0}}>
+              {i+1}
+            </div>
+            <div style={{flex:1,background:`${b.color}0f`,border:`1px solid ${b.color}30`,borderRadius:'12px',padding:'0.9rem 1.25rem',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'0.5rem'}}>
+              <span style={{fontFamily:"'Space Grotesk',sans-serif",fontWeight:700,color:'#eef1ff',fontSize:'0.95rem'}}>{b.label}</span>
+              <span style={{color:b.color,fontSize:'0.8rem',fontFamily:"'JetBrains Mono',monospace"}}>{b.sub}</span>
+            </div>
+            {i < boxes.length - 1 && (
+              <div style={{position:'absolute',left:'2.4rem',marginTop:'3rem',color:'#8a97c8',fontSize:'1.2rem',display:'none'}} />
+            )}
+          </div>
+        ))}
+      </div>
+      <div style={{marginTop:'1.5rem',padding:'1rem 1.25rem',background:'rgba(14,18,42,0.6)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:'12px',color:'#8a97c8',fontSize:'0.85rem',lineHeight:1.7}}>
+        <strong style={{color:'#eef1ff'}}>Data flow:</strong> Browser loads static files from GitHub Pages → <code style={{color:'#c4a0ff'}}>app.js</code> calls OpenRouter API → response filtered via <code style={{color:'#42d392'}}>isFreeModel()</code> → models sorted by context window (largest first) → <code style={{color:'#f5b72f'}}>chooseCategory()</code> maps each to a use-case bucket → DOM renders animated cards with "Try It Free" deep-links to OpenRouter Playground.
+      </div>
+    </section>
+  );
+}
+
+function TechStack() {
+  const stack = [
+    { name:'HTML5', color:'#f2667a', reason:'Semantic structure, accessible landmarks, no transpilation needed' },
+    { name:'CSS3', color:'#00d4ff', reason:'Custom properties, keyframe animations, glassmorphism — zero runtime cost' },
+    { name:'Vanilla JS (ES6+)', color:'#f5b72f', reason:'IIFE module pattern keeps global scope clean; no framework overhead' },
+    { name:'Node:test', color:'#42d392', reason:'Built-in Node test runner — no Jest, no Mocha, zero extra dependencies' },
+    { name:'jsdom ^26', color:'#8c52ff', reason:'Sole devDependency — real DOM API in Node for integration-level tests' },
+    { name:'GitHub Actions', color:'#7c8aff', reason:'3 workflows: test gates, pages deploy, live smoke test' },
+    { name:'GitHub Pages', color:'#c4a0ff', reason:'CDN-backed static hosting, automatic HTTPS, zero infra management' },
+    { name:'OpenRouter API', color:'#00d4ff', reason:'Unified free-tier model catalog across 8+ AI providers' },
+  ];
+  return (
+    <section style={{maxWidth:'960px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,marginBottom:'0.75rem',color:'#eef1ff'}}>Tech Stack</h2>
+      <p style={{color:'#8a97c8',marginBottom:'2rem',lineHeight:1.7}}>Every technology choice was deliberate. The principle: maximum capability, minimum dependency surface.</p>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:'1rem'}}>
+        {stack.map(s => (
+          <div key={s.name} style={{background:'rgba(14,18,42,0.7)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:'14px',padding:'1.25rem'}}>
+            <div style={{display:'inline-block',padding:'0.2rem 0.7rem',borderRadius:'999px',fontSize:'0.78rem',fontWeight:700,background:s.color+'18',color:s.color,fontFamily:"'JetBrains Mono',monospace",marginBottom:'0.6rem'}}>
+              {s.name}
+            </div>
+            <p style={{color:'#8a97c8',fontSize:'0.85rem',lineHeight:1.6}}>{s.reason}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function HowItWorks() {
+  const steps = [
+    {
+      n:'01', title:'Module Initialization',
+      desc:'The IIFE in app.js receives the global scope as a parameter, ensuring both browser (window) and Node (globalThis) environments work identically.',
+      code:`(function (globalScope) {
+  function createApp(options = {}) {
+    const fetchImpl = options.fetch || globalScope.fetch;
+    const modelUtils = options.modelUtils || globalScope.ModelUtils;
+    // ...
+  }
+})(typeof window !== "undefined" ? window : globalThis);`,
+    },
+    {
+      n:'02', title:'Live API Fetch',
+      desc:'On every page load, the app fetches the OpenRouter model catalog — no caching, always fresh. The endpoint returns the full catalog including pricing metadata.',
+      code:`const response = await fetchImpl(
+  "https://openrouter.ai/api/v1/models",
+  { headers: { "Content-Type": "application/json" } }
+);
+const { data: models } = await response.json();`,
+    },
+    {
+      n:'03', title:'Free Model Filter',
+      desc:'isFreeModel() checks that both prompt AND completion pricing are ≤ $0. Null, empty, or non-numeric pricing is treated as Infinity (paid), preventing false positives.',
+      code:`function isFreeModel(model) {
+  const promptPrice  = parsePrice(model?.pricing?.prompt);
+  const completionPrice = parsePrice(model?.pricing?.completion);
+  return promptPrice <= 0 && completionPrice <= 0;
+}`,
+    },
+    {
+      n:'04', title:'Deterministic Categorization',
+      desc:'Models are first matched by keywords (code/vision/learn/chat). When no keyword matches, a djb2-style hash on the model id+name maps deterministically to one of 5 categories — stable across refreshes.',
+      code:`function chooseCategory(model) {
+  const src = \`\${model?.id} \${model?.name}\`.toLowerCase();
+  if (src.includes("code") || src.includes("coder")) return "Coding";
+  if (src.includes("vision") || src.includes("image")) return "Creative";
+  // hash fallback:
+  return deterministicCategory(src);
+}`,
+    },
+    {
+      n:'05', title:'Context Window Humanization',
+      desc:'Raw token counts (e.g. 128,000) are converted to human-readable approximations ("Can read about a 142-page book at once") using a 900 tokens-per-page heuristic.',
+      code:`function formatContextWindow(contextLength) {
+  const tokens = Number(contextLength || 0);
+  const approxPages = Math.max(1, Math.round(tokens / 900));
+  return \`\${tokens.toLocaleString()} tokens
+  · Can read about a \${approxPages}-page book at once\`;
+}`,
+    },
+    {
+      n:'06', title:'Skeleton Loading + Animated Counter',
+      desc:'While the API fetches, 6 shimmer skeleton cards fill the grid. The live model count animates from 0 to its final value using requestAnimationFrame for buttery-smooth counting.',
+      code:`function animateCount(target) {
+  const startTime = performance.now();
+  const tick = (now) => {
+    const progress = Math.min(1, (now - startTime) / 700);
+    freeModelCount.textContent =
+      Math.round(start + (target - start) * progress);
+    if (progress < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}`,
+    },
+  ];
+  return (
+    <section style={{maxWidth:'960px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,marginBottom:'0.75rem',color:'#eef1ff'}}>How It Works</h2>
+      <p style={{color:'#8a97c8',marginBottom:'2.5rem',lineHeight:1.7}}>A technical walkthrough of the six core operations, from module boot to final DOM render.</p>
+      <div style={{display:'flex',flexDirection:'column',gap:'2rem'}}>
+        {steps.map(s => (
+          <div key={s.n} style={{background:'rgba(14,18,42,0.7)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:'16px',overflow:'hidden'}}>
+            <div style={{padding:'1.5rem 1.75rem 0'}}>
+              <div style={{display:'flex',alignItems:'center',gap:'1rem',marginBottom:'0.75rem'}}>
+                <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'0.75rem',color:'#8c52ff',fontWeight:700}}>{s.n}</span>
+                <h3 style={{fontSize:'1.1rem',fontWeight:700,color:'#eef1ff'}}>{s.title}</h3>
+              </div>
+              <p style={{color:'#8a97c8',lineHeight:1.7,marginBottom:'1.25rem',fontSize:'0.9rem'}}>{s.desc}</p>
+            </div>
+            <pre style={{background:'rgba(4,6,18,0.9)',borderTop:'1px solid rgba(255,255,255,0.06)',padding:'1.25rem 1.75rem',fontSize:'0.8rem',color:'#c4d8ff',lineHeight:1.7,overflowX:'auto'}}>
+              <code>{s.code}</code>
+            </pre>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function DesignDecisions() {
+  const decisions = [
+    {
+      title:'No Build Step — by Design',
+      tradeoff:'Slightly more verbose module pattern vs. instant deploy',
+      detail:'Eliminating the build pipeline means any contributor can fork, edit one file, and see it live via GitHub Pages in minutes. The IIFE + CJS dual-export pattern (module.exports check) preserves testability without transpilation.',
+      accent:'#8c52ff',
+    },
+    {
+      title:'Dependency Injection for Testability',
+      tradeoff:'Slightly more factory-function boilerplate vs. 100% deterministic tests',
+      detail:'createApp() accepts fetch, document, performance, and requestAnimationFrame as options. Tests inject mock implementations — no network hits, no DOM environment needed from the test runner itself (jsdom provides it).',
+      accent:'#00d4ff',
+    },
+    {
+      title:'Hash-Based Deterministic Categorization',
+      tradeoff:'Imperfect semantic accuracy vs. stable, reproducible results',
+      detail:'A djb2-style hash maps models without keyword matches to a category deterministically. A model\'s category never changes between page loads, preventing jarring card reordering — important for UX consistency.',
+      accent:'#42d392',
+    },
+    {
+      title:'Sort by Context Window (Largest First)',
+      tradeoff:'Potential recency bias vs. surfacing most capable free models first',
+      detail:'Context window length is used as a proxy for model capability. Power users see the most capable models at the top; the difficulty badge (Beginner/Intermediate/Power User) provides the necessary caveats.',
+      accent:'#f5b72f',
+    },
+    {
+      title:'CSS Variables + Particles — CSS Only',
+      tradeoff:'Slightly less dynamic than canvas/WebGL vs. zero JS overhead for visuals',
+      detail:'All animations (shimmer, particle float, counter) use CSS keyframes or requestAnimationFrame on simple DOM elements. No animation library. This keeps the critical path lean and the page interactive before any script fully evaluates.',
+      accent:'#f2667a',
+    },
+  ];
+  return (
+    <section style={{maxWidth:'960px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,marginBottom:'0.75rem',color:'#eef1ff'}}>Key Design Decisions</h2>
+      <p style={{color:'#8a97c8',marginBottom:'2.5rem',lineHeight:1.7}}>Five architectural choices that define the project's character — and the tradeoffs accepted.</p>
+      <div style={{display:'flex',flexDirection:'column',gap:'1.25rem'}}>
+        {decisions.map(d => (
+          <div key={d.title} style={{background:'rgba(14,18,42,0.7)',border:`1px solid ${d.accent}25`,borderLeft:`3px solid ${d.accent}`,borderRadius:'0 14px 14px 0',padding:'1.5rem 1.75rem'}}>
+            <h3 style={{color:'#eef1ff',fontWeight:700,marginBottom:'0.35rem',fontSize:'1rem'}}>{d.title}</h3>
+            <div style={{display:'inline-block',background:'rgba(255,255,255,0.06)',borderRadius:'6px',padding:'0.15rem 0.6rem',fontSize:'0.75rem',color:'#8a97c8',marginBottom:'0.75rem',fontFamily:"'JetBrains Mono',monospace"}}>
+              tradeoff: {d.tradeoff}
+            </div>
+            <p style={{color:'#8a97c8',fontSize:'0.88rem',lineHeight:1.7}}>{d.detail}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PerfSection() {
+  const metrics = [
+    { label:'Time to First Byte', value:'< 50ms', note:'GitHub Pages CDN, globally distributed*', color:'#42d392' },
+    { label:'API Response Time', value:'~200ms', note:'OpenRouter /models endpoint — no auth required*', color:'#00d4ff' },
+    { label:'JS Payload', value:'< 15KB', note:'app.js + model-utils.js + use-cases.js combined', color:'#8c52ff' },
+    { label:'Test Suite Runtime', value:'< 2s', note:'3 integration tests via node --test, no network', color:'#f5b72f' },
+    { label:'CI Pipeline', value:'< 60s', note:'test + deploy + smoke gates end-to-end*', color:'#f2667a' },
+    { label:'Models Rendered', value:'50+', note:'Scales with OpenRouter catalog growth; DOM handles 200+ cards smoothly*', color:'#c4a0ff' },
+  ];
+  return (
+    <section style={{maxWidth:'960px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,marginBottom:'0.75rem',color:'#eef1ff'}}>Performance & Scalability</h2>
+      <p style={{color:'#8a97c8',marginBottom:'2rem',lineHeight:1.7}}>Static delivery + minimal JS = near-instant user experience at any scale. The architecture has no server-side bottlenecks.</p>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:'1rem'}}>
+        {metrics.map(m => (
+          <div key={m.label} style={{background:'rgba(14,18,42,0.7)',border:'1px solid rgba(255,255,255,0.07)',borderRadius:'14px',padding:'1.25rem'}}>
+            <div style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:'1.75rem',fontWeight:800,color:m.color,lineHeight:1}}>{m.value}</div>
+            <div style={{color:'#eef1ff',fontWeight:600,marginTop:'0.4rem',fontSize:'0.9rem'}}>{m.label}</div>
+            <div style={{color:'#8a97c8',fontSize:'0.78rem',marginTop:'0.35rem',lineHeight:1.5}}>{m.note}</div>
+          </div>
+        ))}
+      </div>
+      <p style={{color:'#8a97c8',fontSize:'0.75rem',marginTop:'1.25rem'}}>* = estimated based on typical GitHub Pages and OpenRouter performance characteristics.</p>
+    </section>
+  );
+}
+
+function GettingStarted() {
+  return (
+    <section style={{maxWidth:'960px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,marginBottom:'0.75rem',color:'#eef1ff'}}>Getting Started</h2>
+      <p style={{color:'#8a97c8',marginBottom:'2rem',lineHeight:1.7}}>Three commands from zero to running. No npm install required to use the app; it's just for running tests.</p>
+      <div style={{display:'flex',flexDirection:'column',gap:'1rem'}}>
+        {[
+          { step:'Install', cmd:'git clone https://github.com/arvind3/ai-explorer.git\ncd ai-explorer\nnpm install', note:'Only installs jsdom (the sole devDependency)' },
+          { step:'Run Tests', cmd:'npm test', note:'Executes 3 integration tests using Node\'s built-in test runner' },
+          { step:'Open the App', cmd:'open index.html\n# Or: python -m http.server 8080', note:'No build step — open directly in a browser or serve locally' },
+        ].map(s => (
+          <div key={s.step} style={{background:'rgba(4,6,18,0.9)',border:'1px solid rgba(255,255,255,0.08)',borderRadius:'14px',overflow:'hidden'}}>
+            <div style={{background:'rgba(140,82,255,0.1)',borderBottom:'1px solid rgba(255,255,255,0.06)',padding:'0.6rem 1.25rem',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:'0.8rem',color:'#c4a0ff',fontWeight:700}}>{s.step}</span>
+              <span style={{color:'#8a97c8',fontSize:'0.75rem'}}>{s.note}</span>
+            </div>
+            <pre style={{padding:'1.25rem',fontSize:'0.82rem',color:'#c4d8ff',lineHeight:1.7,overflowX:'auto'}}>
+              <code>{s.cmd}</code>
+            </pre>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ContribSection() {
+  return (
+    <section style={{maxWidth:'960px',margin:'0 auto',padding:'0 1.5rem 6rem',position:'relative',zIndex:1}}>
+      <div style={{background:'linear-gradient(135deg,rgba(140,82,255,0.12),rgba(0,212,255,0.08))',border:'1px solid rgba(140,82,255,0.25)',borderRadius:'20px',padding:'3rem',textAlign:'center'}}>
+        <div style={{fontSize:'2.5rem',marginBottom:'1rem'}}>⚙️</div>
+        <h2 style={{fontSize:'1.6rem',fontWeight:700,color:'#eef1ff',marginBottom:'0.75rem'}}>Contribute to AI Explorer</h2>
+        <p style={{color:'#8a97c8',maxWidth:'52ch',margin:'0 auto 2rem',lineHeight:1.7}}>
+          Open issues welcome. PRs are tested automatically. All changes go through the test gate before deploy — contributions are safe by default.
+        </p>
+        <div style={{display:'flex',gap:'1rem',justifyContent:'center',flexWrap:'wrap'}}>
+          <a href="https://github.com/arvind3/ai-explorer" target="_blank" rel="noreferrer"
+            style={{background:'linear-gradient(135deg,#8c52ff,#00d4ff)',color:'#fff',padding:'0.75rem 1.75rem',borderRadius:'12px',fontWeight:700,fontSize:'0.95rem'}}>
+            ★ View on GitHub →
+          </a>
+          <a href="https://github.com/arvind3/ai-explorer/issues" target="_blank" rel="noreferrer"
+            style={{background:'rgba(255,255,255,0.07)',border:'1px solid rgba(255,255,255,0.12)',color:'#eef1ff',padding:'0.75rem 1.75rem',borderRadius:'12px',fontWeight:600,fontSize:'0.95rem'}}>
+            Open an Issue
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer style={{borderTop:'1px solid rgba(255,255,255,0.07)',padding:'2.5rem 1.5rem',textAlign:'center',color:'#8a97c8',position:'relative',zIndex:1}}>
+      <p style={{marginBottom:'0.5rem',fontSize:'0.9rem'}}>
+        <strong style={{color:'#eef1ff'}}>AI Explorer</strong> — Built by Arvind Bhardwaj &nbsp;·&nbsp; Engineering Perspective
+      </p>
+      <p style={{fontSize:'0.85rem'}}>
+        <a href="https://github.com/arvind3/ai-explorer" target="_blank" rel="noreferrer" style={{color:'#8c52ff',fontWeight:600}}>⭐ github.com/arvind3/ai-explorer</a>
+        &nbsp;·&nbsp;
+        <a href="index.html" style={{color:'#8a97c8'}}>← Back to Hub</a>
+      </p>
+    </footer>
+  );
+}
+
+function App() {
+  return (
+    <div style={{minHeight:'100vh',background:'radial-gradient(circle at 20% 10%, #14183a 0%, #07091a 55%)'}}>
+      <div className="orb" style={{width:'500px',height:'500px',background:'rgba(140,82,255,0.12)',left:'-150px',top:'-150px'}} />
+      <div className="orb" style={{width:'350px',height:'350px',background:'rgba(0,212,255,0.1)',right:'-80px',top:'400px'}} />
+      <Nav />
+      <Hero />
+      <ArchSection />
+      <TechStack />
+      <HowItWorks />
+      <DesignDecisions />
+      <PerfSection />
+      <GettingStarted />
+      <ContribSection />
+      <Footer />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

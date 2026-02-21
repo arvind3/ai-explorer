@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Explorer — Capability Perspective</title>
+  <meta name="description" content="AI Explorer as a cross-domain innovation enablement platform — capabilities spanning enterprise, education, startups, and the emerging agent economy." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --bg: #07091a; --purple: #8c52ff; --cyan: #00d4ff;
+      --green: #42d392; --amber: #f5b72f; --red: #f2667a;
+      --text: #eef1ff; --muted: #8a97c8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text); overflow-x: hidden; }
+    h1,h2,h3,h4 { font-family: 'Space Grotesk', sans-serif; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.7s ease forwards; }
+    .fade-up-d1 { animation: fadeUp 0.7s 0.1s ease forwards; opacity: 0; }
+    .fade-up-d2 { animation: fadeUp 0.7s 0.2s ease forwards; opacity: 0; }
+    .orb { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
+    a { text-decoration: none; }
+    @keyframes pulse-ring { 0%,100% { opacity:0.3; transform:scale(1); } 50% { opacity:0.7; transform:scale(1.05); } }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const NAV_LINKS = [
+  { label:"Hub",         href:"index.html" },
+  { label:"Engineering", href:"engineering.html" },
+  { label:"Product",     href:"product.html" },
+  { label:"Capability",  href:"capability.html" },
+  { label:"Executive",   href:"executive.html" },
+];
+
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', fn);
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+  return (
+    <nav style={{
+      position:'fixed',top:0,left:0,right:0,zIndex:100,
+      background: scrolled ? 'rgba(7,9,26,0.97)' : 'rgba(7,9,26,0.65)',
+      backdropFilter:'blur(20px)',
+      borderBottom:`1px solid ${scrolled?'rgba(255,255,255,0.1)':'transparent'}`,
+      transition:'all 0.3s',padding:'0.85rem 1.5rem',
+      display:'flex',alignItems:'center',justifyContent:'space-between',
+    }}>
+      <a href="index.html" style={{fontFamily:"'Space Grotesk',sans-serif",fontWeight:800,color:'#eef1ff',display:'flex',alignItems:'center',gap:'0.4rem'}}>
+        <span style={{background:'linear-gradient(90deg,#8c52ff,#00d4ff)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>✦</span> AI Explorer
+      </a>
+      <div style={{display:'flex',alignItems:'center',gap:'1.25rem',flexWrap:'wrap'}}>
+        {NAV_LINKS.map(l => (
+          <a key={l.label} href={l.href} style={{color:l.label==='Capability'?'#eef1ff':'#8a97c8',fontSize:'0.875rem',fontWeight:l.label==='Capability'?700:500,transition:'color 0.2s'}}
+            onMouseEnter={e=>e.target.style.color='#eef1ff'}
+            onMouseLeave={e=>e.target.style.color=l.label==='Capability'?'#eef1ff':'#8a97c8'}>
+            {l.label}
+          </a>
+        ))}
+        <a href="https://github.com/arvind3/ai-explorer" target="_blank" rel="noreferrer"
+          style={{background:'linear-gradient(135deg,#8c52ff,#00d4ff)',color:'#fff',padding:'0.4rem 1rem',borderRadius:'8px',fontWeight:700,fontSize:'0.85rem'}}>
+          ★ GitHub
+        </a>
+      </div>
+    </nav>
+  );
+}
+
+function Hero() {
+  return (
+    <section style={{position:'relative',padding:'9rem 1.5rem 5rem',zIndex:1}}>
+      <div style={{maxWidth:'900px',margin:'0 auto',textAlign:'center'}}>
+        <div className="fade-up" style={{marginBottom:'1.5rem'}}>
+          <span style={{display:'inline-flex',alignItems:'center',gap:'0.4rem',background:'rgba(66,211,146,0.08)',border:'1px solid rgba(66,211,146,0.25)',borderRadius:'999px',padding:'0.3rem 1rem',fontSize:'0.78rem',color:'#42d392',letterSpacing:'0.05em',textTransform:'uppercase'}}>
+            🌐 Capability Perspective
+          </span>
+        </div>
+        <h1 className="fade-up-d1" style={{fontSize:'clamp(2rem,4.5vw,3.4rem)',fontWeight:800,lineHeight:1.15,marginBottom:'1.5rem'}}>
+          Not just a model directory —
+          <br />
+          <span style={{background:'linear-gradient(90deg,#42d392,#00d4ff)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>
+            an innovation enablement platform
+          </span>
+        </h1>
+        <p className="fade-up-d2" style={{color:'#8a97c8',fontSize:'1.1rem',lineHeight:1.8,maxWidth:'62ch',margin:'0 auto'}}>
+          AI Explorer is the infrastructure layer that connects every developer — regardless of budget, role, or organization — to the full breadth of the generative AI economy. When you remove the price barrier from AI access, you don't just enable one developer. You unlock entire teams, organizations, and industries.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function CapabilityMap() {
+  const spokes = [
+    { label:'Enterprise Innovation', icon:'🏢', color:'#8c52ff', angle:0 },
+    { label:'Developer Education', icon:'📚', color:'#00d4ff', angle:60 },
+    { label:'Startup Prototyping', icon:'🚀', color:'#42d392', angle:120 },
+    { label:'Academic Research', icon:'🔬', color:'#f5b72f', angle:180 },
+    { label:'No-Code Enablement', icon:'⚡', color:'#f2667a', angle:240 },
+    { label:'Open-Source AI', icon:'🌍', color:'#c4a0ff', angle:300 },
+  ];
+  return (
+    <section style={{maxWidth:'960px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,color:'#eef1ff',marginBottom:'0.75rem',textAlign:'center'}}>Core Capability Map</h2>
+      <p style={{color:'#8a97c8',marginBottom:'3rem',lineHeight:1.7,textAlign:'center'}}>Six domains where free AI access creates compounding value.</p>
+      <div style={{position:'relative',display:'flex',justifyContent:'center',marginBottom:'2rem'}}>
+        <div style={{position:'relative',width:'320px',height:'320px'}}>
+          {/* Center hub */}
+          <div style={{
+            position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',
+            width:'110px',height:'110px',borderRadius:'50%',
+            background:'linear-gradient(135deg,#8c52ff,#00d4ff)',
+            display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+            boxShadow:'0 0 40px rgba(140,82,255,0.4)',
+            zIndex:2,
+          }}>
+            <div style={{fontSize:'1.5rem'}}>✦</div>
+            <div style={{fontFamily:"'Space Grotesk',sans-serif",fontWeight:800,fontSize:'0.7rem',color:'#fff',marginTop:'0.2rem',textAlign:'center',lineHeight:1.2}}>Free AI<br/>Access</div>
+          </div>
+          {/* Spokes */}
+          {spokes.map((s,i) => {
+            const rad = (s.angle - 90) * Math.PI / 180;
+            const r = 130;
+            const x = 160 + r * Math.cos(rad);
+            const y = 160 + r * Math.sin(rad);
+            return (
+              <div key={s.label} style={{
+                position:'absolute',
+                left: x - 44,
+                top: y - 44,
+                width:'88px',height:'88px',
+                borderRadius:'50%',
+                background:`${s.color}15`,
+                border:`1px solid ${s.color}40`,
+                display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+                zIndex:2,
+              }}>
+                <div style={{fontSize:'1.4rem'}}>{s.icon}</div>
+                <div style={{fontFamily:"'Space Grotesk',sans-serif",fontSize:'0.62rem',fontWeight:700,color:s.color,textAlign:'center',lineHeight:1.25,marginTop:'0.15rem',padding:'0 0.2rem'}}>{s.label}</div>
+              </div>
+            );
+          })}
+          {/* Connecting lines (SVG) */}
+          <svg style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:1}} viewBox="0 0 320 320">
+            {spokes.map((s,i) => {
+              const rad = (s.angle - 90) * Math.PI / 180;
+              const r = 130;
+              const x = 160 + r * Math.cos(rad);
+              const y = 160 + r * Math.sin(rad);
+              const sx = 160 + 55 * Math.cos(rad);
+              const sy = 160 + 55 * Math.sin(rad);
+              const ex = 160 + (r - 44) * Math.cos(rad);
+              const ey = 160 + (r - 44) * Math.sin(rad);
+              return <line key={s.label} x1={sx} y1={sy} x2={ex} y2={ey} stroke={s.color} strokeWidth="1" strokeOpacity="0.3" strokeDasharray="4,4" />;
+            })}
+          </svg>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CrossDomain() {
+  const domains = [
+    {
+      domain:'Enterprise DevOps',
+      icon:'🏢',
+      color:'#8c52ff',
+      problem:'Dev teams blocked from AI prototyping by API budget approval cycles (often 2–6 weeks*).',
+      application:'AI Explorer lets teams discover and validate use cases using free models before any budget request — shortening the innovation cycle from weeks to hours.',
+      impact:'Prototype-to-approval cycle reduced from weeks to same day.*',
+    },
+    {
+      domain:'Higher Education',
+      icon:'🎓',
+      color:'#00d4ff',
+      problem:'Students and researchers can\'t afford API credits for coursework or projects. University procurement is too slow for semester timelines.',
+      application:'AI Explorer surfaces production-grade free models (Gemma, Llama, Mistral) usable for NLP coursework, research experiments, and capstone projects.',
+      impact:'100% of students get access to state-of-the-art AI on day one.*',
+    },
+    {
+      domain:'Startup MVP Development',
+      icon:'🚀',
+      color:'#42d392',
+      problem:'Pre-seed startups burn runway on AI API credits while validating product-market fit. Every dollar spent on tokens is a dollar not spent on customers.',
+      application:'Free models power MVP chatbots, content pipelines, and automation workflows. Founders validate demand before committing to paid API tiers.',
+      impact:'AI infrastructure cost for MVP validation: $0.*',
+    },
+    {
+      domain:'Non-Profit & NGO Innovation',
+      icon:'🌍',
+      color:'#f5b72f',
+      problem:'Mission-driven organizations have zero budget for AI experimentation. Commercial AI pricing is inaccessible for most non-profits.',
+      application:'AI Explorer unlocks free models for translation, document summarization, beneficiary communication, and grant writing automation.',
+      impact:'AI capability unlocked for organizations with $0 AI budget.*',
+    },
+    {
+      domain:'Developer Upskilling',
+      icon:'📈',
+      color:'#f2667a',
+      problem:'Engineers who want to add AI to their skillset face a chicken-and-egg problem: need to experiment to learn, but need a budget to experiment.',
+      application:'AI Explorer + free OpenRouter access = hands-on AI engineering practice with real production models. No toy examples. Real capability.',
+      impact:'Zero-cost path from "curious developer" to "AI-capable engineer."*',
+    },
+    {
+      domain:'Community Tech Initiatives',
+      icon:'🤝',
+      color:'#c4a0ff',
+      problem:'Developer communities, bootcamps, and hackathons struggle to provide AI access at scale without commercial agreements.',
+      application:'AI Explorer is freely deployable for any community. Every participant gets identical, real AI access — no tiering, no exclusions.',
+      impact:'AI access democratized across entire developer communities.*',
+    },
+  ];
+  return (
+    <section style={{maxWidth:'960px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,color:'#eef1ff',marginBottom:'0.75rem'}}>Cross-Domain Applications</h2>
+      <p style={{color:'#8a97c8',marginBottom:'2.5rem',lineHeight:1.7}}>Six industries where removing the AI access barrier creates compounding impact.</p>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:'1.25rem'}}>
+        {domains.map(d => (
+          <div key={d.domain} style={{background:`${d.color}08`,border:`1px solid ${d.color}22`,borderRadius:'18px',padding:'1.75rem'}}>
+            <div style={{display:'flex',alignItems:'center',gap:'0.75rem',marginBottom:'1rem'}}>
+              <div style={{fontSize:'1.75rem'}}>{d.icon}</div>
+              <h3 style={{color:'#eef1ff',fontWeight:700,fontSize:'1rem'}}>{d.domain}</h3>
+            </div>
+            <div style={{marginBottom:'0.75rem'}}>
+              <div style={{fontSize:'0.72rem',fontWeight:700,color:'#8a97c8',textTransform:'uppercase',letterSpacing:'0.05em',marginBottom:'0.3rem'}}>The Problem</div>
+              <p style={{color:'#8a97c8',fontSize:'0.82rem',lineHeight:1.6}}>{d.problem}</p>
+            </div>
+            <div style={{marginBottom:'0.75rem'}}>
+              <div style={{fontSize:'0.72rem',fontWeight:700,color:d.color,textTransform:'uppercase',letterSpacing:'0.05em',marginBottom:'0.3rem'}}>How It Applies</div>
+              <p style={{color:'#c4d4ff',fontSize:'0.82rem',lineHeight:1.6}}>{d.application}</p>
+            </div>
+            <div style={{background:d.color+'12',borderRadius:'8px',padding:'0.6rem 0.85rem'}}>
+              <span style={{color:d.color,fontSize:'0.78rem',fontWeight:700}}>Impact: </span>
+              <span style={{color:'#eef1ff',fontSize:'0.78rem'}}>{d.impact}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p style={{color:'#8a97c8',fontSize:'0.75rem',marginTop:'1.25rem'}}>* = estimated or extrapolated from the platform's capabilities and industry benchmarks.</p>
+    </section>
+  );
+}
+
+function BuildingBlocks() {
+  const blocks = [
+    { name:'OpenRouter API Integration', desc:'Unified REST endpoint aggregating models from 8+ providers. Single integration surface — when a provider adds a free model, AI Explorer surfaces it automatically.', icon:'🔌' },
+    { name:'isFreeModel() Filter Engine', desc:'Price-constraint logic (prompt ≤ $0 AND completion ≤ $0) that handles null, empty, and non-numeric price values robustly. Extensible to other cost constraints.', icon:'🔍' },
+    { name:'Deterministic Categorization', desc:'Keyword + hash-based model categorization. The same interface design can be adapted to any taxonomy — skill level, language, modality, or domain-specific classification.', icon:'🧭' },
+    { name:'Context Window Translator', desc:'Token-count-to-human-language converter. Reusable pattern for making any technical metric understandable to non-expert audiences.', icon:'📏' },
+    { name:'CI/CD Quality Gates', desc:'3-workflow GitHub Actions pipeline: unit/integration tests, deployment validation, live smoke tests. Drop-in quality infrastructure for any static site project.', icon:'🔒' },
+    { name:'Static Site Architecture', desc:'Zero backend, CDN-delivered, GitHub Pages hosted. The same architecture scales from 10 to 10M users with no code changes — just DNS.', icon:'⚡' },
+  ];
+  return (
+    <section style={{maxWidth:'960px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,color:'#eef1ff',marginBottom:'0.75rem'}}>Capability Building Blocks</h2>
+      <p style={{color:'#8a97c8',marginBottom:'2rem',lineHeight:1.7}}>Six reusable components that make AI Explorer extensible and composable.</p>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:'1rem'}}>
+        {blocks.map(b => (
+          <div key={b.name} style={{background:'rgba(14,18,42,0.7)',border:'1px solid rgba(66,211,146,0.12)',borderRadius:'16px',padding:'1.5rem'}}>
+            <div style={{fontSize:'1.75rem',marginBottom:'0.6rem'}}>{b.icon}</div>
+            <h3 style={{color:'#eef1ff',fontWeight:700,fontSize:'0.95rem',marginBottom:'0.5rem'}}>{b.name}</h3>
+            <p style={{color:'#8a97c8',fontSize:'0.83rem',lineHeight:1.65}}>{b.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CombinationPlays() {
+  const plays = [
+    {
+      title:'AI Explorer + LangChain / LlamaIndex',
+      icon:'🔗',
+      color:'#8c52ff',
+      scenario:'A developer uses AI Explorer to identify the best free Mistral model for their use case, then uses the OpenRouter API key in LangChain to build a full RAG pipeline — zero API spend from discovery to production prototype.',
+      value:'From model discovery to working AI application in under a day, at $0 infrastructure cost.*',
+    },
+    {
+      title:'AI Explorer + GitHub Copilot / Cursor',
+      icon:'💻',
+      color:'#00d4ff',
+      scenario:'An enterprise developer browses AI Explorer on their phone during a commute, identifies a free DeepSeek coding model, and configures it as their Cursor AI provider — giving them a powerful coding assistant without any additional spend.',
+      value:'Free AI coding assistant unlocked inside existing developer workflow.*',
+    },
+    {
+      title:'AI Explorer + No-Code Platforms',
+      icon:'⚡',
+      color:'#42d392',
+      scenario:'A non-technical product manager uses AI Explorer to find a free writing-optimized model, extracts the OpenRouter endpoint, and plugs it into Make.com or Zapier to automate their weekly reporting workflow.',
+      value:'Non-developers become AI-capable operators without any engineering support.*',
+    },
+  ];
+  return (
+    <section style={{maxWidth:'960px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <h2 style={{fontSize:'1.5rem',fontWeight:700,color:'#eef1ff',marginBottom:'0.75rem'}}>Combination Plays</h2>
+      <p style={{color:'#8a97c8',marginBottom:'2rem',lineHeight:1.7}}>AI Explorer as the discovery layer in three compound-value workflows.</p>
+      <div style={{display:'flex',flexDirection:'column',gap:'1.25rem'}}>
+        {plays.map(p => (
+          <div key={p.title} style={{background:`${p.color}08`,border:`1px solid ${p.color}22`,borderRadius:'18px',padding:'2rem',display:'grid',gridTemplateColumns:'auto 1fr',gap:'1.5rem',alignItems:'start'}}>
+            <div style={{fontSize:'2.2rem'}}>{p.icon}</div>
+            <div>
+              <h3 style={{color:'#eef1ff',fontWeight:700,fontSize:'1rem',marginBottom:'0.75rem'}}>{p.title}</h3>
+              <p style={{color:'#8a97c8',fontSize:'0.875rem',lineHeight:1.7,marginBottom:'0.75rem'}}>{p.scenario}</p>
+              <div style={{display:'inline-block',background:p.color+'15',border:`1px solid ${p.color}25`,borderRadius:'8px',padding:'0.4rem 0.85rem',fontSize:'0.8rem',color:p.color,fontWeight:600}}>
+                ⚡ {p.value}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p style={{color:'#8a97c8',fontSize:'0.75rem',marginTop:'1rem'}}>* = scenario outcomes are illustrative and estimated.</p>
+    </section>
+  );
+}
+
+function EmergingOpportunity() {
+  return (
+    <section style={{maxWidth:'960px',margin:'0 auto',padding:'0 1.5rem 5rem',position:'relative',zIndex:1}}>
+      <div style={{background:'linear-gradient(135deg,rgba(66,211,146,0.08),rgba(0,212,255,0.06))',border:'1px solid rgba(66,211,146,0.2)',borderRadius:'20px',padding:'2.5rem'}}>
+        <h2 style={{fontSize:'1.5rem',fontWeight:700,color:'#eef1ff',marginBottom:'1.25rem'}}>Emerging Opportunity</h2>
+        <p style={{color:'#8a97c8',lineHeight:1.85,fontSize:'1rem',marginBottom:'1.25rem'}}>
+          The AI model economy is in rapid flux. New open-weight models from Mistral, Meta, Google, and DeepSeek are being released monthly — many with competitive performance and zero cost for inference. The bottleneck is no longer model availability. It's <strong style={{color:'#eef1ff'}}>discoverability and accessibility</strong>.
+        </p>
+        <p style={{color:'#8a97c8',lineHeight:1.85,fontSize:'1rem',marginBottom:'1.25rem'}}>
+          As AI agents and multi-model workflows become the dominant computing paradigm, developers will need an intelligent model routing layer — one that knows which free models are best for which tasks, that updates in real time, and that integrates seamlessly with agent orchestration frameworks.
+        </p>
+        <p style={{color:'#8a97c8',lineHeight:1.85,fontSize:'1rem'}}>
+          AI Explorer is already the foundation for this. Its live API integration, deterministic categorization, and zero-infrastructure architecture position it to evolve from a discovery UI into an <strong style={{color:'#42d392'}}>open model routing API</strong> — a layer that any agent, application, or developer tool can query to find the optimal free model for any given task context.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function PartnershipCTA() {
+  return (
+    <section style={{maxWidth:'900px',margin:'0 auto',padding:'0 1.5rem 6rem',position:'relative',zIndex:1}}>
+      <div style={{background:'linear-gradient(135deg,rgba(66,211,146,0.1),rgba(140,82,255,0.08))',border:'1px solid rgba(66,211,146,0.25)',borderRadius:'20px',padding:'3rem',textAlign:'center'}}>
+        <div style={{fontSize:'2.5rem',marginBottom:'1rem'}}>🤝</div>
+        <h2 style={{fontSize:'1.75rem',fontWeight:800,color:'#eef1ff',marginBottom:'0.75rem'}}>Partner, Integrate, Collaborate</h2>
+        <p style={{color:'#8a97c8',maxWidth:'52ch',margin:'0 auto 2rem',lineHeight:1.75}}>
+          If you're building an AI agent framework, an educational platform, or a developer tooling product — AI Explorer's open architecture is designed to integrate. Let's build the AI access layer together.
+        </p>
+        <div style={{display:'flex',gap:'1rem',justifyContent:'center',flexWrap:'wrap'}}>
+          <a href="https://github.com/arvind3/ai-explorer" target="_blank" rel="noreferrer"
+            style={{background:'linear-gradient(135deg,#42d392,#00d4ff)',color:'#07091a',padding:'0.85rem 2rem',borderRadius:'12px',fontWeight:700,fontSize:'1rem'}}>
+            Explore the Codebase →
+          </a>
+          <a href="https://github.com/arvind3/ai-explorer/issues" target="_blank" rel="noreferrer"
+            style={{background:'rgba(255,255,255,0.07)',border:'1px solid rgba(255,255,255,0.12)',color:'#eef1ff',padding:'0.85rem 2rem',borderRadius:'12px',fontWeight:600,fontSize:'1rem'}}>
+            Start a Discussion
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer style={{borderTop:'1px solid rgba(255,255,255,0.07)',padding:'2.5rem 1.5rem',textAlign:'center',color:'#8a97c8',position:'relative',zIndex:1}}>
+      <p style={{marginBottom:'0.5rem',fontSize:'0.9rem'}}>
+        <strong style={{color:'#eef1ff'}}>AI Explorer</strong> — Built by Arvind Bhardwaj &nbsp;·&nbsp; Capability Perspective
+      </p>
+      <p style={{fontSize:'0.85rem'}}>
+        <a href="https://github.com/arvind3/ai-explorer" target="_blank" rel="noreferrer" style={{color:'#42d392',fontWeight:600}}>⭐ github.com/arvind3/ai-explorer</a>
+        &nbsp;·&nbsp;
+        <a href="index.html" style={{color:'#8a97c8'}}>← Back to Hub</a>
+      </p>
+    </footer>
+  );
+}
+
+function App() {
+  return (
+    <div style={{minHeight:'100vh',background:'radial-gradient(circle at 25% 15%, #091a14 0%, #07091a 55%)'}}>
+      <div className="orb" style={{width:'450px',height:'450px',background:'rgba(66,211,146,0.08)',left:'-100px',top:'-100px'}} />
+      <div className="orb" style={{width:'350px',height:'350px',background:'rgba(0,212,255,0.1)',right:'-80px',top:'350px'}} />
+      <Nav />
+      <Hero />
+      <CapabilityMap />
+      <CrossDomain />
+      <BuildingBlocks />
+      <CombinationPlays />
+      <EmergingOpportunity />
+      <PartnershipCTA />
+      <Footer />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
